@@ -21,7 +21,7 @@ def extraer_todas_las_imagenes():
 
     for resultado in resultados:
         # Obtener los valores de cada columna
-        Id_imagen, Nombre, Imagen_blob, Estado_planta, Fecha_capture, Hora_capture, Ubicacion_geográfica, Condiciones_climáticas = resultado
+        Id_imagen, Nombre, Imagen_blob, Estado_planta, Fecha_captura, Hora_captura, Ubicacion_geográfica, Condiciones_climáticas = resultado
 
         # Convertir los bytes a una imagen
         imagen_bytes = BytesIO(Imagen_blob)
@@ -33,8 +33,8 @@ def extraer_todas_las_imagenes():
             Nombre: {Nombre}
             Imagen = {imagen}
             Estado de la Planta: {Estado_planta}
-            Fecha de Captura: {Fecha_capture}
-            Hora de Captura: {Hora_capture}
+            Fecha de Captura: {Fecha_captura}
+            Hora de Captura: {Hora_captura}
             Ubicación geográfica: {Ubicacion_geográfica}
             Condiciones Climáticas: {Condiciones_climáticas}
         """)
@@ -43,6 +43,6 @@ def extraer_todas_las_imagenes():
     cursor.close()
     connection.close()
 
-# Ejemplo de uso
+# Extraer las imágenes
 extraer_todas_las_imagenes()
 
