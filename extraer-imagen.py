@@ -18,7 +18,7 @@ def extraer_todas_las_imagenes():
     query = "SELECT * FROM Imágenes"
     cursor.execute(query)
     resultados = cursor.fetchall()
-
+    
     for resultado in resultados:
         # Obtener los valores de cada columna
         Id_imagen, Nombre, Imagen_blob, Estado_planta, Fecha_captura, Hora_captura, Ubicacion_geográfica, Condiciones_climáticas = resultado
@@ -38,11 +38,10 @@ def extraer_todas_las_imagenes():
             Ubicación geográfica: {Ubicacion_geográfica}
             Condiciones Climáticas: {Condiciones_climáticas}
         """)
-
+        
     # Cerrar la conexión
     cursor.close()
     connection.close()
 
 # Extraer las imágenes
 extraer_todas_las_imagenes()
-
