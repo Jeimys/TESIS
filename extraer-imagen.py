@@ -1,6 +1,7 @@
 import mysql.connector
 from io import BytesIO
 from PIL import Image
+import numpy as np
 
 def extraer_todas_las_imagenes():
     # Conectar a MySQL
@@ -18,7 +19,9 @@ def extraer_todas_las_imagenes():
     query = "SELECT * FROM Imágenes"
     cursor.execute(query)
     resultados = cursor.fetchall()
-    
+
+    datos = []
+    datos1 = []
     for resultado in resultados:
         # Obtener los valores de cada columna
         Id_imagen, Nombre, Imagen_blob, Estado_planta, Fecha_captura, Hora_captura, Ubicacion_geográfica, Condiciones_climáticas = resultado
@@ -26,7 +29,8 @@ def extraer_todas_las_imagenes():
         # Convertir los bytes a una imagen
         imagen_bytes = BytesIO(Imagen_blob)
         imagen = Image.open(imagen_bytes)
-        #imagen.show() # Mostrar imagen
+        imagen_np = np.array(imagen) # Sería la imagen multiespectral en forma de array 
+        #imagen.show() # Mostrar imagen con programa del pc
 
         # Imprimir otros datos
         print(f"""ID: {Id_imagen}
@@ -39,6 +43,11 @@ def extraer_todas_las_imagenes():
             Condiciones Climáticas: {Condiciones_climáticas}
         """)
         
+        datos.append(Nombre)
+        datos1.append(Id_imagen)
+
+    print(datos)
+    print(datos1)
     # Cerrar la conexión
     cursor.close()
     connection.close()

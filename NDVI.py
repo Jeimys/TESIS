@@ -1,18 +1,19 @@
-import rasterio
+import cv2
 import numpy as np
-from rasterio.plot import show
 from sklearn import svm
 from sklearn.cluster import KMeans
 from skimage import exposure
+import matplotlib.pyplot as plt
 
 # Ruta a la imagen multiespectral (reemplaza con tu propia ruta)
-ruta_imagen = 'imagen1.jpg'
+ruta_imagen = 'im.tif'
 
-# Abrir la imagen con Rasterio
-with rasterio.open(ruta_imagen) as src:
-    # Leer las bandas necesarias (rojo e infrarrojo cercano)
-    banda_rojo = src.read(3)
-    banda_infrarrojo = src.read(4)
+# Leer la imagen multiespectral utilizando OpenCV
+imagen_multiespectral = cv2.imread(ruta_imagen, cv2.IMREAD_UNCHANGED)
+
+# Extraer las bandas necesarias (rojo e infrarrojo cercano)
+banda_rojo = imagen_multiespectral[:, :, 2]
+banda_infrarrojo = imagen_multiespectral[:, :, 3]
 
 # Calcular el NDVI
 ndvi = (banda_infrarrojo - banda_rojo) / (banda_infrarrojo + banda_rojo)
@@ -32,9 +33,11 @@ zonas_cultivo = np.where((ndvi >= umbral_min) & (ndvi <= umbral_max), 1, 0)
 # Visualizar el NDVI y las zonas de cultivo
 plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
-show(ndvi, cmap='RdYlGn', title='NDVI')
+plt.imshow(ndvi, cmap='RdYlGn')
+plt.title('NDVI')
 plt.subplot(1, 2, 2)
-show(zonas_cultivo, cmap='Blues', title='Zonas de Cultivo')
+plt.imshow(zonas_cultivo, cmap='Blues')
+plt.title('Zonas de Cultivo')
 plt.show()
 
 # Preparar datos para SVM
@@ -50,9 +53,11 @@ prediccion_svm = modelo_svm.predict(X).reshape(banda_rojo.shape)
 # Visualizar la predicción SVM
 plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
-show(zonas_cultivo, cmap='Blues', title='Zonas de Cultivo (Real)')
+plt.imshow(zonas_cultivo, cmap='Blues')
+plt.title('Zonas de Cultivo (Real)')
 plt.subplot(1, 2, 2)
-show(prediccion_svm, cmap='Blues', title='Zonas de Cultivo (SVM)')
+plt.imshow(prediccion_svm, cmap='Blues')
+plt.title('Zonas de Cultivo (SVM)')
 plt.show()
 
 # Preparar datos para k-means
@@ -69,7 +74,9 @@ etiquetas_kmeans = modelo_kmeans.labels_.reshape(banda_rojo.shape)
 # Visualizar la segmentación k-means
 plt.figure(figsize=(12, 6))
 plt.subplot(1, 2, 1)
-show(zonas_cultivo, cmap='Blues', title='Zonas de Cultivo (Real)')
+plt.imshow(zonas_cultivo, cmap='Blues')
+plt.title('Zonas de Cultivo (Real)')
 plt.subplot(1, 2, 2)
-show(etiquetas_kmeans, cmap='viridis', title='Segmentación K-Means')
+plt.imshow(etiquetas_kmeans, cmap='viridis')
+plt.title('Segmentación K-Means')
 plt.show()

@@ -1,6 +1,8 @@
 import mysql.connector
 from io import BytesIO
 from PIL import Image
+import cv2
+import numpy as np
 
 connection = mysql.connector.connect(
     host= "localhost",
@@ -69,6 +71,8 @@ def insertar_imagen(Nombre, Ruta_imagen, Estado_planta, Fecha_captura, Hora_capt
 insertar_imagen("imagen1", "imagen1.jpg", "Enferma", "2024-01-01", "12:00:00", "Lat: XX.XXXX, Lon: YY.YYYY", "Soleado y ventoso")
 insertar_imagen("imagen2", "imagen2.jpg", "Sana", "2024-01-01", "12:30:00", "Lat: XX.XXXX, Lon: YY.YYYY", "Nublado con lluvia")
 insertar_imagen("imagen3", "imagen3.jpg", "Enferma", "2024-01-01", "01:00:00", "Lat: XX.XXXX, Lon: YY.YYYY", "Soleado sin viento")
+insertar_imagen("TIFF", "imag.tiff", "Enferma", "2024-01-01", "12:00:00", "Lat: XX.XXXX, Lon: YY.YYYY", "Soleado y ventoso")
+insertar_imagen("TIF", "im.tif", "Sana", "2024-01-01", "12:30:00", "Lat: XX.XXXX, Lon: YY.YYYY", "Nublado con lluvia")
 
 print("-"*60)
 
@@ -98,6 +102,7 @@ for resultado in resultados:
     # Convertir los bytes a una imagen
     imagen_bytes = BytesIO(Imagen_blob)
     imagen = Image.open(imagen_bytes)
+    imagen_np = np.array(imagen) # Sería la imagen multiespectral en forma de array 
     #imagen.show() # Mostrar imagen
 
     # Imprimir otros datos

@@ -19,16 +19,17 @@ from PIL import ImageTk, Image
 
 root = Tk()
 root.title("GUI software de identificación de imagenes en base k-means")
-root.iconbitmap('ico_Br.ico')
+#root.iconbitmap('ico_Br.ico')
 root.geometry("800x600")
 root['background'] = '#19232d'
 
-img_1 = Image.open("UPB_logo.jpg")
+img_1 = Image.open("imagen1.jpg")
 
 np.random.seed(42)
 
-dir = 'C://Users//gloes//Desktop//Codigo//BrIm'
-img_temp = cv2.imread('C:/Users/gloes/Desktop/Codigo/S_BrI.png', 0)
+#dir = 'C://Users//gloes//Desktop//Codigo//BrIm'
+dir = 'C:/Users/Jey Pérez/OneDrive/Escritorio/NDVI/BrIm'
+img_temp = cv2.imread('imagen3.jpg', 0)
 
 Catg = ['isquemia', 'NMO', 'Normal', 'PRES']
 data = []
@@ -219,7 +220,7 @@ def openf():
     global label_1
     global label_2
     root.filename = filedialog.askopenfilename(
-        initialdir='C://Users//gloes//Desktop//Codigo//BrIm',
+        initialdir="C:/Users/Jey Pérez/OneDrive/Escritorio/NDVI/BrIm",
         title="Selecciona una imagen", filetypes=(("png files", "*.png"),
                                                   ("all files", "*.*")))
     img_l = Image.open(root.filename)
