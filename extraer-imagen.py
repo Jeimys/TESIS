@@ -2,40 +2,62 @@ import mysql.connector
 from io import BytesIO
 from PIL import Image
 import numpy as np
+import cv2
+
+# Conectar a MySQL
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    port="3306",
+    database="Imágenes"
+)
+
+cursor = connection.cursor()
 
 def extraer_todas_las_imagenes():
-    # Conectar a MySQL
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        port="3306",
-        database="Imágenes"
-    )
-
-    cursor = connection.cursor()
-
     # Recuperar todas las filas de la base de datos
     query = "SELECT * FROM Imágenes"
     cursor.execute(query)
     resultados = cursor.fetchall()
+    return resultados
 
-    datos = []
-    datos1 = []
-    for resultado in resultados:
-        # Obtener los valores de cada columna
-        Id_imagen, Nombre, Imagen_blob, Estado_planta, Fecha_captura, Hora_captura, Ubicacion_geográfica, Condiciones_climáticas = resultado
 
-        # Convertir los bytes a una imagen
+# Extraer las imágenes llamando la función
+resultados = extraer_todas_las_imagenes()
+
+
+# Mostrar IDs disponibles
+print("IDs disponibles:")
+for resultado in resultados:
+    Id_imagen, Nombre, _, _, _, _, _, _ = resultado
+    print(f"ID: {Id_imagen}, Nombre: {Nombre}")
+
+# Preguntar al usuario por el ID de la imagen
+id_elegido = int(input("Ingrese el ID de la imagen que desea ver: "))
+
+for resultado in resultados:
+# Obtener los valores de cada columna
+    Id_imagen, Nombre, Imagen_blob, Estado_planta, Fecha_captura, Hora_captura, Ubicacion_geográfica, Condiciones_climáticas = resultado
+
+    if Id_imagen == id_elegido:
+        # Convertir los bytes a una una matriz NumPy
         imagen_bytes = BytesIO(Imagen_blob)
-        imagen = Image.open(imagen_bytes)
-        imagen_np = np.array(imagen) # Sería la imagen multiespectral en forma de array 
-        #imagen.show() # Mostrar imagen con programa del pc
+        imagen_array = np.frombuffer(imagen_bytes.getvalue(), dtype=np.uint8)
 
+        # Decodificar la imagen con OpenCV
+        imagen = cv2.imdecode(imagen_array, cv2.IMREAD_UNCHANGED)
+
+        # Mostrar la imagen
+        cv2.imshow("Imagen Multiespectral", imagen)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+ 
         # Imprimir otros datos
         print(f"""ID: {Id_imagen}
             Nombre: {Nombre}
-            Imagen = {imagen}
+            Imagen = {imagen_bytes}
             Estado de la Planta: {Estado_planta}
             Fecha de Captura: {Fecha_captura}
             Hora de Captura: {Hora_captura}
@@ -43,14 +65,8 @@ def extraer_todas_las_imagenes():
             Condiciones Climáticas: {Condiciones_climáticas}
         """)
         
-        datos.append(Nombre)
-        datos1.append(Id_imagen)
+        break  # Salir del bucle una vez que se encuentra la imagen
 
-    print(datos)
-    print(datos1)
-    # Cerrar la conexión
-    cursor.close()
-    connection.close()
-
-# Extraer las imágenes
-extraer_todas_las_imagenes()
+# Cerrar la conexión
+cursor.close()
+connection.close()
