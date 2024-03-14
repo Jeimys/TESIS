@@ -3,7 +3,7 @@ import tifffile
 import os
 
 # Ruta de las imágenes
-ruta_imagenes = "D:\BDnormalizada"
+ruta_imagenes = "D:\BD"
 
 # Umbral para determinar si una imagen es "enferma"
 umbral = 0.5  

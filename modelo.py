@@ -6,6 +6,8 @@ from skimage import data, segmentation, color
 from skimage import graph
 from matplotlib import pyplot as plt
 import os
+from skimage.future import graph
+
 
 
 class Algorithms:
